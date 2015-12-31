@@ -3,7 +3,14 @@ Este repositório contém os programas desenvolvidos para a elaboração do trab
 
 ### Requerimentos
 
+ - [Anaconda Python Distribution](https://www.continuum.io/why-anaconda)
+
+ou
+
  - [Jupyter Notebook](http://jupyter.org/)
+ - [Pandas](http://pandas.pydata.org/)
+ - [Matplotlib](http://matplotlib.org/)
+ - [Numpy](http://www.numpy.org/)
 
 ### Execução
 
