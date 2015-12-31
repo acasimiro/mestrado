@@ -56,21 +56,30 @@ def performance_data(filepath, strategies_mapping):
 
 def performance_chart(performance, colors, label):
     num_days = len(performance.values()[0])
-    x_labels = ['Dia ' + str(i) for i in range(1, num_days + 1)]
-    x_index = np.arange(len(x_labels))
+    too_long = (num_days > 10)
 
-    num_strategies = len(performance)
-    bar_width = 1/(num_strategies + 2)
+    x_index = np.arange(num_days)
 
     fig = plt.figure(figsize=(12, 4))
     ax  = fig.add_subplot(111)
-    for i, (st, series) in enumerate(performance.items(), 1):
-        ax.bar(x_index + i*bar_width, series, bar_width, color=colors[st], label=st)
-    # plt.title('Desempenho das estrategias por ' + label, fontsize=14)
+
+    if too_long:
+        x_labels = [str(i) for i in range(1, num_days + 1)]
+        for i, (st, series) in enumerate(performance.items(), 1):
+            ax.plot(x_index, series, color=colors[st], label=st, marker='.')
+    else:
+        bar_width = 1/(len(performance) + 2)
+        x_labels = ['Dia ' + str(i) for i in range(1, num_days + 1)]
+        for i, (st, series) in enumerate(performance.items(), 1):
+            ax.bar(x_index + i*bar_width, series, bar_width, color=colors[st], label=st)
+
+    plt.xlabel('Dia')
     plt.ylabel(label)
     plt.xticks(x_index + 0.5, x_labels)
     ax.set_position([0.1, 0, 0.5, 0.8])
     ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=len(x_labels))
+    if too_long:
+        ax.set_xlim([x_index[0], x_index[-1]])
     plt.tight_layout()
     fig.savefig(OUTPUT_FOLDER + label + '_performance.pdf')
     plt.show()
@@ -80,8 +89,9 @@ def fobj_chart(ctrs, ecpms, colors, alpha, beta, gamma, delta):
     strategies = ctrs.keys()
     
     num_days = len(ctrs.values()[0])
-    x_labels = ['Dia ' + str(i) for i in range(1, num_days + 1)]
-    x_index = np.arange(len(x_labels))
+    too_long = (num_days > 10)
+
+    x_index = np.arange(num_days)
     
     fig = plt.figure(figsize=(12, 4))
     ax = fig.add_subplot(111)
@@ -92,12 +102,18 @@ def fobj_chart(ctrs, ecpms, colors, alpha, beta, gamma, delta):
         sigma2 = ((C-mu)**2 + (E-mu)**2)/2
         fobjs = (alpha + beta)*C + gamma*E - delta*sigma2
         ax.plot(x_index, fobjs, color=colors[st], label=st, marker='.')
-    #plt.title('Funcao objetivo das estrategias', fontsize=14)
+
+    if too_long:
+        x_labels = [str(i) for i in range(1, num_days + 1)]
+    else:
+        x_labels = ['Dia ' + str(i) for i in range(1, num_days + 1)]
+    
     plt.ylabel('Fobj')
     plt.xticks(x_index, x_labels)
     ax.set_position([0.1, 0, 0.5, 0.8])
     ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=len(x_labels))
     ax.set_xlim([x_index[0]-0.1, x_index[-1]+0.1])
+
     plt.tight_layout()
     fig.savefig(OUTPUT_FOLDER + 'Fobj.pdf')
     plt.show()
