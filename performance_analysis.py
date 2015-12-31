@@ -75,11 +75,13 @@ def performance_chart(performance, colors, label):
 
     plt.xlabel('Dia')
     plt.ylabel(label)
-    plt.xticks(x_index + 0.5, x_labels)
     ax.set_position([0.1, 0, 0.5, 0.8])
     ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), ncol=len(x_labels))
     if too_long:
         ax.set_xlim([x_index[0], x_index[-1]])
+        plt.xticks(x_index, x_labels)
+    else:
+        plt.xticks(x_index + 0.5, x_labels)
     plt.tight_layout()
     fig.savefig(OUTPUT_FOLDER + label + '_performance.pdf')
     plt.show()
